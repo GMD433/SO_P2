@@ -7,6 +7,8 @@
 
 static int current_session_id = 0;  //use this variable to generate unique session IDs
 int freq, fresp, fserver, session_id;
+int current_session;
+int pipe_write, pipe_read;
 
 typedef struct{
   bool active;
@@ -24,24 +26,51 @@ typedef struct{
 
 // criar estrutura em cada função
 int ems_setup(char const* req_pipe_path, char const* resp_pipe_path, char const* server_pipe_path) {
+  int req_pipe = mkfifo(req_pipe_path, 0777;
+  int resp_pipe = mkfifo(resp_pipe_path, 0777;
   //TODO: create pipes and connect to the server
   //int freq, fresp, fserver, session_id;  -> ´é para ser global ou local?
-  if ((mkfifo(req_pipe_path, 0777) == -1)||(mkfifo(resp_pipe_path, 0777) == -1))   // create the FIFO (named pipe)
+  if (req_pipe == -1||resp_pipe == -1)   // create the FIFO (named pipe)
     return 1;
-
-  if (((freq = open(req_pipe_path, O_RDONLY)) < 0)||((fresp = open(resp_pipe_path, O_WRONLY)) < 0))  // open the FIFO
-    return 1;
-
-  if ((fserver = open(server_pipe_path, O_RDONLY)) < 0)
-    return 1;
-    
+  
+  pipe_write = open(server_pipe_path,O_WRONLY);
+  client new_client;
+  new_client.op_code = '1';
+  strcpy(new_client.pipe_name, req_pipe_path);
+  ssize_t write_len = write(pipe_write, &new_client,sizeof(client));
+  if (write_len == -1){
+    return 1
+  }
+  pipe_read = open(resp_pipe_path,O_RONLY);
+  ssize_t read_len = read(pipe_read,&current_session,sizeof(int));
+  if(read_len == -1){
+    return 1
+  }
+  printf("Session: %d\n", active_session); 
   return 0;
 }
 
 int ems_quit(void) { 
   //TODO: close pipes
-  if ((close(freq) == -1)||(close(fresp) == -1))
+  client client;
+  client.op_code = '2';
+  client.session_id = current_session;
+  printf("Processing \n");
+  ssize_t write_len =write(pipe_write,&client,sizeof(client));
+  if (write_len == -1){
+    return 1
+  }
+  if(close(pipe_write) == -1){
+    printf("Error\n");
     return 1;
+  }
+  int response;
+  ssize_t read_len = read(pipe_read, &response, sizeof(int));
+  printf("response: %d \n", response);
+  if(close(pipe_read) == -1 || response == -1 || read_len == -1){
+    printf("Another error\n");
+    return 1;
+  }
   return 0;
 }
 
