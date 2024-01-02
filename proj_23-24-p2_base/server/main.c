@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   }
 
   //TODO: Intialize server, create worker threads
-  //mkfifo, open read pipe
+  
 
   while (1) {
     //TODO: Read from pipe

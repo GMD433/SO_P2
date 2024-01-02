@@ -3,5 +3,5 @@
 #define MAX_JOB_FILE_NAME_SIZE 256
 #define MAX_SESSION_COUNT 8
 
-enum {OP_CODE_SETUP = 1, OP_CODE_QUIT = 2, OP_CODE_CREATE = 3, OP_CODE_RESERVE = 4, OP_CODE_SHOW = 5, OP_CODE_EMS_LIST_EVENTS = 6};
-const char* const OP_CODES[] = {"", "1", "2", "3", "4", "5", "6"};
+//enum {OP_CODE_SETUP = 1, OP_CODE_QUIT = 2, OP_CODE_CREATE = 3, OP_CODE_RESERVE = 4, OP_CODE_SHOW = 5, OP_CODE_EMS_LIST_EVENTS = 6};
+//const char* const OP_CODES[] = {"", "1", "2", "3", "4", "5", "6"};
